@@ -1,0 +1,63 @@
+{% extends 'common_code/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contact.css' %}">
+{% endblock %}
+
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+<div class="bg-gray-100 flex items-center justify-center min-h-screen py-4">
+
+  <div class="bg-white py-6 px-10 rounded-lg shadow-md w-full max-w-[800px] grid grid-cols-1 md:grid-cols-2 gap-8">
+    
+    <!-- Left Side: Contact Info -->
+    <div>
+      <h2 class="text-2xl font-bold mb-4">Contact Information</h2>
+      {% for info in contact_infos %}
+        <p class="mb-2"><strong>Name:</strong> {{ info.name }}</p>
+        <p class="mb-2"><strong>Email:</strong> {{ info.email }}</p>
+        <p class="mb-2"><strong>Phone:</strong> {{ info.phone }}</p>
+        <p class="mb-2"><strong>Address:</strong> {{ info.address }}</p>
+      {% empty %}
+        <p>No contact information found.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Right Side: Contact Form -->
+    <div>
+      <h2 class="text-2xl font-bold mb-4 text-center">Send Us a Message</h2>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="POST" class="space-y-4">
+        {% csrf_token %}
+
+        {% for field in form.visible_fields %}
+          <div class="relative">
+            {% render_field field id=field.id_for_label class="peer w-full border border-gray-300 px-3 py-3 rounded focus:outline-none focus:ring focus:ring-blue-200 placeholder-transparent" placeholder=field.label %}
+            <label for="{{ field.id_for_label }}" class="absolute left-3 -top-2 text-gray-600 text-sm bg-white px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-gray-600 transition-all cursor-text">
+              {{ field.label }}
+            </label>
+            {% if field.errors %}
+              <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Send Message</button>
+      </form>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

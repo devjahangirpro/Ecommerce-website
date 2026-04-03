@@ -1,0 +1,40 @@
+
+{% extends 'common_code/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/payment_page.css' %}">
+{% endblock %}
+
+{% block title %}Payment method{% endblock %}
+
+
+
+
+
+{% block content %}
+<section class="max-w-md mx-auto my-10 bg-white p-8 rounded shadow">
+  <h2 class="text-2xl font-bold mb-6 text-center">Choose Payment Method</h2>
+
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+
+    <div>
+      <label class="block mb-2">
+        <input type="radio" name="payment_method" value="Cash on Delivery" required>
+        Cash on Delivery
+      </label>
+      <label class="block mb-2">
+        <input type="radio" name="payment_method" value="Bkash" required>
+        Bkash
+      </label>
+      <label class="block mb-2">
+        <input type="radio" name="payment_method" value="Nagad" required>
+        Nagad
+      </label>
+    </div>
+
+    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Confirm Payment Method</button>
+  </form>
+</section>
+{% endblock %}

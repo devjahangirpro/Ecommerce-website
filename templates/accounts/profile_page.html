@@ -1,0 +1,99 @@
+{% extends 'common_code/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/register_page.css' %}">
+{% endblock %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto mt-10 p-4">
+  <h2 class="text-3xl font-bold mb-6 text-center">Profile Dashboard</h2>
+
+  <!-- Grid Layout -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- User Info -->
+    <div class="bg-white rounded-lg shadow p-4">
+      <h2 class="text-xl font-semibold mb-2">User Information</h2>
+      <p><span class="font-medium">Username:</span> {{ user.username }}</p>
+      <p><span class="font-medium">Email:</span> {{ user.email }}</p>
+      {% if user.profile.phone %}
+        <p><span class="font-medium">Phone:</span> {{ user.profile.phone }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Cart Items -->
+    <div class="bg-white rounded-lg shadow p-4">
+      <h2 class="text-xl font-semibold mb-2">Cart Items</h2>
+      {% if cart_items %}
+        <ul>
+          {% for item in cart_items %}
+            <li class="border-b py-2 flex justify-between items-center">
+
+              <div>
+                <p><span class="font-medium">Product:</span> {{ item.product.name }}</p>
+                <p><span class="font-medium">Quantity:</span> {{ item.quantity }}</p>
+                <p><span class="font-medium">Price:</span> ৳{{ item.product.price }}</p>
+                <p><span class="font-medium">Total:</span> ৳{{ item.total_price }}</p>
+              </div>
+
+              <!-- Buttons stacked vertically -->
+              <div class="flex flex-col space-y-2 mt-2">
+
+                <!-- Buy Now Button -->
+                <form method="POST" action="{% url 'place_order' item.product.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
+                    Buy Now
+                  </button>
+                </form>
+
+                <!-- Delete Button -->
+                <form method="POST" action="{% url 'delete_cart_item' item.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="bg-red-600 text-white py-2 px-2 rounded hover:bg-red-700 transition w-24">
+                    Delete
+                  </button>
+                </form>
+
+              </div>
+
+            </li>
+          {% endfor %}
+        </ul>
+
+        <!-- Total Cart Value -->
+        <div class="mt-4 text-right">
+          <p class="text-lg font-semibold">Total Cart Value: ৳{{ total_cart_value }}</p>
+        </div>
+
+      {% else %}
+        <p>No items in your cart.</p>
+      {% endif %}
+    </div>
+
+    <!-- Order History -->
+    <div class="bg-white rounded-lg shadow p-4">
+      <h2 class="text-xl font-semibold mb-2">Order History</h2>
+      {% if orders %}
+        <ul>
+          {% for order in orders %}
+            <li class="border-b py-2">
+              <p><span class="font-medium">Product:</span> {{ order.product.name }}</p>
+              <p><span class="font-medium">Total Price:</span> ৳{{ order.product.price }}</p>
+              <p><span class="font-medium">Ordered On:</span> {{ order.ordered_at|date:"F j, Y, g:i a" }}</p>
+              <p><span class="font-medium">Status:</span> {{ order.status }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No orders placed yet.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

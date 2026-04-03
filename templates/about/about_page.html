@@ -1,0 +1,27 @@
+{% extends 'common_code/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
+{% block title %}About{% endblock %}
+
+
+{% block content %}
+<div class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-6 md:p-10 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 max-w-xl w-full">
+        <div class="flex flex-col items-center text-center">
+            <img src="{{ about.photo.url }}" alt="Profile Photo "
+                 class=" shadow-lg w-40 h-40 rounded-full object-cover border-4 border-blue-500 hover:scale-105 transition-transform duration-300 ">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mt-4 hover:text-blue-600 transition-colors duration-300">
+                {{ about.name }}
+            </h1>
+            <p class="text-gray-500 mt-1 text-sm md:text-base">{{ about.email }}</p>
+            <p class="text-gray-500 text-sm md:text-base">{{ about.phone }}</p>
+            <p class="text-gray-700 mt-4 text-sm md:text-base leading-relaxed">
+                {{ about.bio }}
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'common_code/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/register_page.css' %}">
+{% endblock %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="bg-gray-100 flex items-center justify-center min-h-screen py-4">
+
+  <div class="bg-white py-6 px-10 rounded-lg shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-4 text-center">Create an Account</h2>
+
+    {% if form.errors %}
+      <div class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+        Please fix the errors below.
+      </div>
+    {% endif %}
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+
+      <!-- Input group -->
+      {% for field in form.visible_fields %}
+        <div class="relative">
+          {% render_field field id=field.id_for_label class="peer w-full border border-gray-300 px-3 py-3 rounded focus:outline-none focus:ring focus:ring-blue-200 placeholder-transparent" placeholder=field.label %}
+          <label for="{{ field.id_for_label }}" class="absolute left-3 -top-2 text-gray-600 text-sm bg-white px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-gray-600 transition-all cursor-text">
+            {{ field.label }}
+          </label>
+          {% if field.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Sign Up</button>
+    </form>
+
+    <p class="mt-4 text-center text-gray-600">
+      Already have an account?
+      <a href="{% url 'login_page' %}" class="text-blue-600 hover:underline">Login</a>
+    </p>
+  </div>
+
+</div>
+{% endblock %}

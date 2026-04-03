@@ -1,0 +1,57 @@
+{% extends 'common_code/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/login_page.css' %}">
+{% endblock %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 text-center {% if message.tags == 'success' %}text-green-600{% else %}text-red-500{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Username Field -->
+            <div class="relative">
+                {% render_field form.username autocomplete="off" class="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-blue-600" placeholder="Username" %}
+                <label for="id_username" class="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
+                    Username
+                </label>
+            </div>
+
+            <!-- Password Field -->
+            <div class="relative">
+                {% render_field form.password autocomplete="new-password" class="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-blue-600" placeholder="Password" %}
+                <label for="id_password" class="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">
+                    Password
+                </label>
+            </div>
+
+            <!-- Forgot Password link -->
+            <div class="text-right">
+                <a href="{% url 'reset_password_request'%}" class="text-sm text-blue-600 hover:underline">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Login</button>
+        </form>
+
+        <p class="mt-4 text-center text-sm text-gray-600">
+            No account?
+            <a href="{% url 'register_page' %}" class="text-blue-600 hover:underline">Sign Up</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

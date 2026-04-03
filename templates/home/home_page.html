@@ -1,0 +1,123 @@
+{% extends 'common_code/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home_page.css' %}">
+{% endblock %}
+
+{% block title %}Home{% endblock %}
+
+<!-- main section -->
+{% block content %}
+<main>
+
+  <!-- Hero Section -->
+  <section class="bg-gray-900 text-white text-center py-20">
+    <h1 class="text-4xl md:text-5xl font-bold mb-4">Welcome to Our Ecommerce Store</h1>
+    <p class="mb-6">Best deals on books, gadgets and more</p>
+    <a href="{% url 'contact' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md text-lg transition duration-300">Contact Us</a>
+  </section>
+
+  <!-- Featured Categories -->
+  <section class="max-w-7xl mx-auto py-12 px-4">
+    <h2 class="text-2xl font-bold mb-6">Featured Categories</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <a href="{% url 'books_products' %}">
+        <div class="bg-white rounded-lg shadow hover:scale-105 transform transition duration-300 text-center py-2">
+          <img src="{% static 'images/books.jpg' %}" alt="Category" class="w-3/6 h-18 mx-auto mb-2">
+          <h3 class="font-medium">Books</h3>
+        </div>
+      </a>
+      <a href="">
+        <div class="bg-white rounded-lg shadow hover:scale-105 transform transition duration-300 text-center py-2">
+          <img src="{% static 'images/shoes.jpg' %}" alt="Category" class="w-3/6 h-18 mx-auto mb-2">
+          <h3 class="font-medium">Shoes</h3>
+        </div>
+      </a>
+      <a href="">
+        <div class="bg-white rounded-lg shadow hover:scale-105 transform transition duration-300 text-center py-2">
+          <img src="{% static 'images/cloth.jpg' %}" alt="Category" class="w-3/6 h-18 mx-auto mb-2">
+          <h3 class="font-medium">Clothing</h3>
+        </div>
+      </a>
+      <a href="">
+        <div class="bg-white rounded-lg shadow hover:scale-105 transform transition duration-300 text-center py-2">
+          <img src="{% static 'images/umbrella.jpg' %}" alt="Category" class="w-3/6 h-18 mx-auto mb-2">
+          <h3 class="font-medium">Umbrella</h3>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="max-w-7xl mx-auto py-12 px-4">
+    <h2 class="text-2xl font-bold mb-6">Featured Products</h2>
+
+    <!-- Product Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 p-6">
+      {% for product in products %}
+      <div class="bg-white rounded-lg shadow hover:scale-105 transform transition duration-300">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="rounded-t-lg p-2 w-full h-50 object-contain">
+        <div class="p-4">
+          <h3 class="text-lg font-semibold mb-2">{{ product.name }}</h3>
+          <p class="text-gray-700 mb-2">{{ product.description|truncatechars:60 }}</p>
+          <p class="text-gray-900 font-bold mb-2">${{ product.price }}</p>
+
+          <div class="mt-3 flex flex-col space-y-2">
+            <!-- Add to Cart form with quantity input and +/- buttons -->
+            <form method="POST" action="{% url 'add_to_cart' product.id %}" class="flex space-x-2 items-center">
+              {% csrf_token %}
+
+              <div class="flex items-center border border-gray-300 rounded">
+                <button type="button" onclick="decreaseQty(this)" class="px-2 py-1 bg-gray-200">-</button>
+                <input type="text" name="quantity" value="1" required
+                       class="w-6 text-center focus:outline-none no-arrows">
+                <button type="button" onclick="increaseQty(this)" class="px-2 py-1 bg-gray-200">+</button>
+              </div>
+
+              <button type="submit" 
+                      class="flex-1 bg-green-600 text-white py-1.5 rounded hover:bg-green-700 transition">
+                Add to Cart
+              </button>
+            </form>
+
+            <!-- Buy Now button -->
+            <form method="POST" action="{% url 'place_order' product.id %}">
+              {% csrf_token %}
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+                Buy Now
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+</main>
+
+<!-- Increment/Decrement Scripts -->
+<script>
+  function increaseQty(btn) {
+    const input = btn.parentNode.querySelector('input[name=quantity]');
+    input.value = parseInt(input.value) + 1;
+  }
+
+  function decreaseQty(btn) {
+    const input = btn.parentNode.querySelector('input[name=quantity]');
+    if (parseInt(input.value) > 1) {
+      input.value = parseInt(input.value) - 1;
+    }
+  }
+</script>
+
+<!-- CSS to remove number input arrows -->
+<style>
+  input.no-arrows::-webkit-outer-spin-button,
+  input.no-arrows::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+</style>
+{% endblock %}

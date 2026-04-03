@@ -1,0 +1,96 @@
+{% extends 'common_code/base.html' %}
+{% load static %}
+{% block title %}Books{% endblock %}
+
+{% block content %}
+<section class="bg-gray-100 py-8">
+  <div class="max-w-6xl mx-auto px-4">
+    <h2 class="text-3xl font-bold mb-8 text-center">Books</h2>
+
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      {% for product in products %}
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
+        
+        <!-- Image -->
+        <div class="relative">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="p-2 w-full h-50 object-contain transform group-hover:scale-105 transition-transform duration-300">
+          {% else %}
+            <div class="w-full h-64 flex items-center justify-center bg-gray-200">
+              <span class="text-gray-500">No Image</span>
+            </div>
+          {% endif %}
+
+          <!-- Optional overlay -->
+          <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition duration-300"></div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-4">
+          <h3 class="text-lg font-semibold mb-2">{{ product.name }}</h3>
+          <p class="text-gray-600 text-sm mb-2">{{ product.description|truncatechars:60 }}</p>
+          <div class="flex justify-between items-center">
+            <span class="text-blue-600 font-bold">${{ product.price }}</span>
+          </div>
+
+          <div class="mt-3 flex flex-col space-y-2">
+            <!-- Add to Cart form with quantity input and +/- buttons -->
+            <form method="POST" action="{% url 'add_to_cart' product.id %}" class="flex space-x-2 items-center">
+              {% csrf_token %}
+
+              <div class="flex items-center border border-gray-300 rounded">
+                <button type="button" onclick="decreaseQty(this)" class="px-2 py-1 bg-gray-200">-</button>
+                <input type="text" name="quantity" value="1" required
+                       class="w-6 text-center focus:outline-none no-arrows">
+                <button type="button" onclick="increaseQty(this)" class="px-2 py-1 bg-gray-200">+</button>
+              </div>
+
+              <button type="submit" 
+                      class="flex-1 bg-green-600 text-white py-1.5 rounded hover:bg-green-700 transition">
+                Add to Cart
+              </button>
+            </form>
+
+            <!-- Buy Now button -->
+              <form method="POST" action="{% url 'place_order' product.id %}">
+               {% csrf_token %}
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+                    Buy Now
+                </button>
+              </form>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p class="col-span-full text-center text-gray-500">No products available in this category.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Increment/Decrement Scripts -->
+<script>
+  function increaseQty(btn) {
+    const input = btn.parentNode.querySelector('input[name=quantity]');
+    input.value = parseInt(input.value) + 1;
+  }
+
+  function decreaseQty(btn) {
+    const input = btn.parentNode.querySelector('input[name=quantity]');
+    if (parseInt(input.value) > 1) {
+      input.value = parseInt(input.value) - 1;
+    }
+  }
+</script>
+
+<!-- CSS to remove number input arrows -->
+<style>
+  input.no-arrows::-webkit-outer-spin-button,
+  input.no-arrows::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+</style>
+{% endblock %}
